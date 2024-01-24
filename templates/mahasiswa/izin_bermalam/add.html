@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var userId = /*[[${session.user.id}]]*/ null;
+        /*]]>*/
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Request IB</h1>
+        <form>
+            <div class="form-group">
+                <label for="nama">Keperluan:</label>
+                <textarea class="form-control" id="keperluan" placeholder="Keperluan"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="deskripsi">Tanggal:</label>
+                <input type="date" class="form-control" id="tanggal">
+            </div>
+            <div class="form-group">
+                <label for="deskripsi">Jam:</label>
+                <input type="time" class="form-control" id="jam">
+            </div>
+            <div class="form-group">
+                <label for="deskripsi">Tanggal Kembali:</label>
+                <input type="date" class="form-control" id="kembali">
+            </div>
+            <button type="button" class="btn btn-primary">Request</button>
+        </form>
+        <a href="/mahasiswa/ib/index" class="btn btn-success">Kembali</a>
+    </div>
+    <script>
+    $(document).ready(function() {
+        $("button").click(function() {
+            var keperluan = document.getElementById("keperluan").value;
+            var tanggal = document.getElementById("tanggal").value;
+            var kembali = document.getElementById("kembali").value;
+            var jam = document.getElementById("jam").value;
+
+            var userModel = {
+            	"idUser": userId,
+                "keperluan": keperluan,
+                "tanggal": tanggal,
+                "jam": jam+":00",
+                "kembali": kembali,
+                "status":0
+            };
+
+            var requestJSON = JSON.stringify(userModel);
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/izinBermalam/mahasiswa/add/",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                data: requestJSON,
+                success: function(data) {
+                    window.location.href = "/mahasiswa/ib/index";
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle error here
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

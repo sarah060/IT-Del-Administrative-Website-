@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Detail IB</h1>
+
+        <div class="form-group">
+            <label for="nama">Nama :</label>
+            <p class="form-control" th:text="${nama}" id="nama"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="keperluan">Keperluan :</label>
+            <p class="form-control" th:text="${izinBermalam.keperluan}" id="keperluan"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="tanggal">Tanggal:</label>
+            <p class="form-control" th:text="${izinBermalam.tanggal}" id="tanggal"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="jam">Jam:</label>
+            <p class="form-control" th:text="${izinBermalam.jam}" id="jam"></p>
+        </div>
+        
+        <div class="form-group">
+            <label for="jam">Tanggal Kembali:</label>
+            <p class="form-control" th:text="${izinBermalam.Kembali}" id="kembali"></p>
+        </div>
+
+        <form th:action="@{'/izinBermalam/admin/detail/' + ${izinBermalam.id}}" method="post" th:object="${izinBermalam}">
+            <button type="submit" name="action" value="approve" class="btn btn-primary">Approve</button>
+            <button type="submit" name="action" value="reject" class="btn btn-primary">Reject</button>
+        </form>
+        <a href="/admin/izinBermalam/index" class="btn btn-success">Kembali</a>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Assign values to HTML elements using jQuery
+            $('#nama').text(nama);
+            $('#keperluan').text(izinBermalam.keperluan);
+            $('#tanggal').text(izinBermalam.tanggal);
+            $('#tanggalKembali').text(izinBermalam.tanggalKembali);
+            $('#jam').text(izinBermalam.jam);
+        });
+    </script>
+</body>
+</html>
