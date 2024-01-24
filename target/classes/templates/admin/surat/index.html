@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>View Users</title>
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+$(document).ready(function() {
+    // Mendengarkan peristiwa saat pengguna mengetikkan sesuatu
+    $("#searchInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#viewDataUsers tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    loadUserData();
+
+    function loadUserData() {
+        // Fungsi untuk mengambil dan menampilkan semua data
+        $.getJSON("http://localhost:8080/surat", function(result) {
+            var data = '';
+            for (var i = 0; i < result.length; i++) {
+                var rowNumber = i + 1; // Hitung nomor baris
+
+                data += "<tr><td>" + rowNumber + "</td><td>" +
+                    result[i].namaSurat + "</td><td>" +
+                    result[i].deskripsi + "</td><td>"+
+                    "<a class='btn btn-warning' href='/admin/surat/edit/" + result[i].id + "'>Edit</a>" +
+                    "<a class='btn btn-danger ml-2' data-surat-id='" + result[i].id + "'>Hapus</a></td></tr>";
+            }
+            $("#viewDataUsers").html(data);
+        });
+    }
+    $(document).on("click", ".btn-danger", function() {
+        // Ambil id dari tombol hapus yang diklik
+        var ruanganId = $(this).data('surat-id');
+
+        // Tampilkan konfirmasi alert
+        var isConfirmed = confirm("Apakah Anda yakin ingin menghapus surat ini?");
+
+        // Jika pengguna mengkonfirmasi, lakukan penghapusan
+        if (isConfirmed) {
+            // Lakukan penghapusan dengan mengarahkan ke endpoint delete
+            window.location.href = "/surat/delete/" + ruanganId;
+        }
+    });
+});
+</script>
+
+
+</head>
+<body>
+<div class="container">
+	<h1 class="mt-4">Daftar Surat</h1>
+	<a href="/admin-index" class="btn btn-success">Kembali</a>
+	<!--<a href="/admin-view-keranjang" class="btn btn-primary">Order</a>  -->
+    <a href="/admin/surat/add" class="btn btn-primary">Tambah Surat</a>
+    <input type="text" id="searchInput" class="form-control" placeholder="Cari surat..">
+    <br>
+    <h4 class="mt-4">Daftar Surat</h4>
+    <table id="viewDataUsers" class="table table-bordered mt-3">
+        <tr>
+            <th>No</th>
+            <th>Nama Surat</th>
+            <th>Deksiripsi</th>
+            <th>Action</th>
+        </tr>
+    </table>
+ </div>
+ 
+</body>
+</html>

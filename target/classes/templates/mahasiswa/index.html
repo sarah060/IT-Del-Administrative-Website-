@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>View Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mt-4">Selamat Datang, <span th:text="${session.user.nama}"></span></h1>
+        <a th:href="@{/user/logout}" class="btn btn-danger">Logout</a>
+    </div>
+    <a th:href="@{/mahasiswa/ib/index}">Izin Bermalam</a><br/>
+    <a th:href="@{/mahasiswa/izin_keluar/index}">Izin Keluar</a><br/>
+    <a th:href="@{/mahasiswa/pembelianKaos/index}">Pemesanan Kaos</a><br/>
+    <a th:href="@{/mahasiswa/bookingRuangan/index}">Booking Ruangan</a><br/>
+    <a th:href="@{/mahasiswa/requestSurat/index}">Request Surat</a><br/>
+</div>
+</body>
+</html>

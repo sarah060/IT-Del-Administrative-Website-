@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Detail Request Surat</h1>
+
+        <div class="form-group">
+            <label for="nama">Nama :</label>
+            <p class="form-control" th:text="${nama}" id="nama"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="keperluan">Keperluan :</label>
+            <p class="form-control" th:text="${requestSurat.keperluan}" id="keperluan"></p>
+        </div>
+        <form th:action="@{'/requestSurat/admin/detail/' + ${requestSurat.id}}" method="post" th:object="${requestSurat}">
+            <button type="submit" name="action" value="approve" class="btn btn-primary">Approve</button>
+            <button type="submit" name="action" value="reject" class="btn btn-primary">Reject</button>
+        </form>
+        <a href="/admin/requestSurat/index" class="btn btn-success">Kembali</a>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Assign values to HTML elements using jQuery
+            $('#nama').text(nama);
+            $('#keperluan').text(izinBermalam.keperluan);
+            $('#tanggal').text(izinBermalam.tanggal);
+            $('#tanggalKembali').text(izinBermalam.tanggalKembali);
+            $('#jam').text(izinBermalam.jam);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>View Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Mendengarkan peristiwa saat pengguna mengetikkan sesuatu
+            $("#searchInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#viewDataUsers tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+
+            loadUserData();
+
+            function loadUserData() {
+                var promises = [];
+                var data = '';
+
+                // Fungsi untuk mengambil dan menampilkan semua data
+                $.getJSON("http://localhost:8080/requestSurat/admin/list", function (results) {
+                    console.log("Response from server:", results);
+
+                    // Check if the result is an array
+                    if (Array.isArray(results)) {
+                        // Iterate through the array of results
+                        results.forEach(function (result, index) {
+                            var rowNumber = index + 1; // Start with the first row
+
+                            // Fetch user information based on userId asynchronously
+                            var promise = new Promise(function (resolve) {
+                                fetchUserInformation(result.idUser, result.idSurat, function (userData, suratData) {
+                                    var userName = userData.nama; // Adjust property based on your actual data structure
+                                    var suratName = suratData.namaSurat;
+                                    data += "<tr><td>" + rowNumber + "</td><td>" +
+                                        userName + "</td><td>" +
+                                        suratName + "</td><td>" +
+                                        result.keperluan + "</td><td>";
+
+                                    // Check the status and apply conditional formatting
+                                    if (result.status === 1) {
+                                        data += "<span class='text-success'>Approved</span>";
+                                    } else if(result.status === 0){
+                                        data += "<span class='text-warning'>Menunggu</span>";
+                                    } else{
+                                    	data += "<span class='text-danger'>Ditolak</span>";
+                                    }
+
+                                    data += "</td><td>" +
+                                        "<a class='btn btn-info' href='/admin/requestSurat/detail/" + result.id + "'>Detail</a>" +
+                                        "<a class='btn btn-danger ml-2' data-requestSurat-id='" + result.id + "'>Hapus</a></td></tr>";
+
+                                    resolve();
+                                });
+                            });
+
+                            promises.push(promise);
+                        });
+
+                        // Wait for all promises to resolve before updating the HTML
+                        Promise.all(promises).then(function () {
+                            // Append the HTML data to the table
+                            $("#viewDataUsers tbody").html(data);
+                        });
+                    } else {
+                        console.error("Expected an array, but got:", results);
+                    }
+                })
+                .fail(function () {
+                    console.error("Error fetching data");
+                });
+            }
+
+            function fetchUserInformation(userId, suratId, callback) {
+                // Assuming there's an endpoint to fetch user information based on userId
+                $.getJSON("http://localhost:8080/user/" + userId, function (userData) {
+                    // Assuming there's an endpoint to fetch surat information based on suratId
+                    $.getJSON("http://localhost:8080/surat/" + suratId, function (suratData) {
+                        callback(userData, suratData);
+                    })
+                    .fail(function () {
+                        console.error("Error fetching surat information");
+                        callback(userData, {});
+                    });
+                })
+                .fail(function () {
+                    console.error("Error fetching user information");
+                    callback({}, {});
+                });
+            }
+
+            $(document).on("click", ".btn-danger", function() {
+                // Ambil id dari tombol hapus yang diklik
+                var ruanganId = $(this).data('requestsurat-id');
+
+                // Tampilkan konfirmasi alert
+                var isConfirmed = confirm("Apakah Anda yakin ingin menghapus request surat ini?");
+
+                // Jika pengguna mengkonfirmasi, lakukan penghapusan
+                if (isConfirmed) {
+                    window.location.href = "/requestSurat/admin/delete/" + ruanganId;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4">Daftar Request Surat</h1>
+    <a href="/admin-index" class="btn btn-success">Kembali</a>
+    <br>
+    <h4 class="mt-4">Daftar Request Surat</h4>
+    <table id="viewDataUsers" class="table table-bordered mt-3">
+        <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Keperluan</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

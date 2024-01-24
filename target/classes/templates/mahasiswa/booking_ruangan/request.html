@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var userId = /*[[${session.user.id}]]*/ null;
+        /*]]>*/
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Booking Ruangan</h1>
+
+        <form id="bookingForm" action="/requestSurat/mahasiswa/request" method="post">
+            <input type="hidden" name="id" value="">
+            <div class="form-group">
+                <label for="ruangan">Ruangan :</label>
+                <select name="idSurat" class="form-control" id="idSurat">
+                    <!-- Options will be dynamically loaded here -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nama">Keperluan :</label>
+                <textarea class="form-control" id="keperluan" name="keperluan"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="deskripsi">Tanggal:</label>
+                <input type="date" class="form-control" id="tanggal">
+            </div>
+            <div class="form-group">
+                <label for="deskripsi">Jam:</label>
+                <input type="time" class="form-control" id="jam">
+            </div>
+            <div class="form-group">
+                <label for="nama">Waktu :</label>
+                <input type="number" class="form-control" id="waktu" name="waktu">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitForm()">Simpan</button>
+        </form>
+        <a href="/mahasiswa/bookingRuangan/indexBooking" class="btn btn-success">Kembali</a>
+    </div>
+
+    <script>
+    function loadSuratOptions() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/ruangan', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+
+                // Clear existing options
+                document.getElementById('idSurat').innerHTML = '';
+
+                // Add options based on the response
+                data.forEach(function(surat) {
+                    var option = document.createElement('option');
+                    option.value = surat.id;
+                    option.text = surat.namaRuangan;
+                    document.getElementById('idSurat').appendChild(option);
+                });
+            } else {
+                console.error('Error loading surat options:', xhr.status, xhr.statusText);
+            }
+        };
+
+        xhr.onerror = function() {
+            console.error('Request failed');
+        };
+
+        xhr.send();
+    }
+
+    // Call the function to load options when the page is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        loadSuratOptions();
+    });
+
+    function submitForm() {
+        var formData = {
+            idUser: userId,  
+            idRuangan: document.getElementById('idSurat').value,
+            keperluan: document.getElementById('keperluan').value,
+            tanggal: document.getElementById('tanggal').value,
+            jam: document.getElementById('jam').value + ":00",
+            waktu: document.getElementById('waktu').value,
+            status: 0
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/bookingRuangan/mahasiswa/book', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+            	window.location.href = '/mahasiswa/bookingRuangan/indexBooking';
+            } else {
+                alert('Error submitting the form.');
+            }
+        };
+
+        xhr.onerror = function() {
+            alert('Request failed');
+        };
+
+        xhr.send(JSON.stringify(formData));
+    }
+    </script>
+</body>
+</html>

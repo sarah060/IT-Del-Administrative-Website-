@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Detail Booking Ruangan</h1>
+
+        <div class="form-group">
+            <label for="nama">Nama :</label>
+            <p class="form-control" th:text="${nama}" id="nama"></p>
+        </div>
+        
+        <div class="form-group">
+            <label for="nama">Ruangan :</label>
+            <p class="form-control" th:text="${namaRuangan}" id="nama"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="keperluan">Keperluan :</label>
+            <p class="form-control" th:text="${bookingRuangan.keperluan}" id="keperluan"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="tanggal">Tanggal:</label>
+            <p class="form-control" th:text="${bookingRuangan.tanggal}" id="tanggal"></p>
+        </div>
+
+        <div class="form-group">
+            <label for="jam">Jam:</label>
+            <p class="form-control" th:text="${bookingRuangan.jam}" id="jam"></p>
+        </div>
+        
+        <div class="form-group">
+            <label for="jam">Waktu:</label>
+            <p class="form-control" th:text="${bookingRuangan.waktu}" id="waktu"></p>
+        </div>
+
+        <form th:action="@{'/bookingRuangan/admin/detail/' + ${bookingRuangan.id}}" method="post" th:object="${bookingRuangan}">
+            <button type="submit" name="action" value="approve" class="btn btn-primary">Approve</button>
+            <button type="submit" name="action" value="reject" class="btn btn-primary">Reject</button>
+        </form>
+        <a href="/admin/bookingRuangan/index" class="btn btn-success">Kembali</a>
+    </div>
+</body>
+</html>

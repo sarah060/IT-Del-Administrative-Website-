@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://ajax.googleapis.com/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Bayar Pesanan</h1>
+        <h4>Total : Rp.<span th:text="${pembelianKaos.total}"></span></h4>
+        
+        <!-- Display error message if present -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <strong>Error:</strong> <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{'/pembelianKaos/mahasiswa/bayar/' + ${pembelianKaos.id}}" method="post" th:object="${pembelianKaos}">
+            <div class="form-group">
+                <label for="bayar">Bayar:</label>
+                <input type="number" class="form-control" name="bayar">
+            </div>
+            
+            <!-- Display additional alert for insufficient funds -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                <strong>Error:</strong> <span th:text="${error}"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </form>
+    
+        <a href="/mahasiswa/pembelianKaos/index" class="btn btn-success">Kembali</a>
+    </div>
+</body>
+</html>
